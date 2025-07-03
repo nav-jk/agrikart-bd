@@ -53,7 +53,7 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = 'api.User'
 
-DOMAIN = "https://agrikart-bd-ws-2a-8000.ml.iit-ropar.truefoundry.cloud"  # Or your actual domain/NGROK
+DOMAIN = "https://agrikart-ws-2a-8000.ml.iit-ropar.truefoundry.cloud"  # Or your actual domain/NGROK
 
 
 MIDDLEWARE = [
