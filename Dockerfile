@@ -2,24 +2,27 @@
 FROM python:3.11-slim
 
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # Set working directory
 WORKDIR /code
 
 # Install dependencies
-COPY requirements.txt /code/
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt .
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire project
-COPY . /code/
+# Copy the entire project into the container
+COPY . .
 
-# Collect static files (optional for prod)
+# Sanity check: ensure wsgi.py exists (for debugging path issues)
+RUN ls -l /code/agrikart/wsgi.py
+
+# Collect static files
 RUN python manage.py collectstatic --noinput
 
-# Expose port (default Django runs on 8000)
+# Expose port 8000 (Django/Gunicorn default)
 EXPOSE 8000
 
 # Run Gunicorn server
