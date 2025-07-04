@@ -113,7 +113,7 @@ class CreateOrderFromCart(APIView):
 
         try:
             print(f" Notifying farmer {farmer_phone} with items: {items}")
-            requests.post("http://localhost:5000/notify-farmer", json=payload)
+            requests.post("https://agrikart-whatsapp-ws-2a-5000.ml.iit-ropar.truefoundry.cloud/notify-farmer", json=payload)
         except Exception as e:
             print(f" Failed to notify farmer {farmer_phone}: {e}")
 
