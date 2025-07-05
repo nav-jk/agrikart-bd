@@ -5,26 +5,34 @@ FROM python:3.11-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Set working directory
+# Create and set working directory
 WORKDIR /code
 
-# Install dependencies
+# Install system dependencies
+RUN apt-get update && apt-get install -y gcc libpq-dev && apt-get clean
+
+# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire project into the container
+# Copy project files
 COPY . .
 
-# Sanity check: ensure wsgi.py exists (for debugging path issues)
-RUN ls -l /code/agrikart/wsgi.py
+# ✅ Create /data folder (just in case volume doesn't)
+RUN mkdir -p /data
 
-# Collect static files
+# ✅ Show DB path for sanity
+RUN echo " DB_PATH: $DB_PATH"
+
+# ✅ Optional: Copy local db for first-time run (comment after first deploy)
+# COPY db.sqlite3 /data/db.sqlite3
+
+# Run collectstatic (you may skip this if not using Django admin CSS/js in production)
 RUN python manage.py collectstatic --noinput
 
-# Expose port 8000 (Django/Gunicorn default)
+# Expose port (Django default)
 EXPOSE 8000
 
-# Run Gunicorn server
+# Launch server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-
